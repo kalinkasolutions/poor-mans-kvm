@@ -1,0 +1,8 @@
+{
+  "DeviceID": "Cherry GmbH CHERRY Corded Device",
+  "ConnectInputCode": "0x0f",
+  "DisconnectInputCode": "0x12",
+  "DisplyBusNumbers": ["6", "8"],
+  "UsbPollingIntervalMs": 500,
+  "VcpInputSourceCode": "60"
+}
