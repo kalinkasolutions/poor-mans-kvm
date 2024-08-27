@@ -82,13 +82,13 @@ Bus 001 Device 030: ID 05e3:0610 Genesys Logic, Inc. Hub
 </pre>
 
 ### Create service: 
-
+#### Build and copy poor man's kvm
 ```
   go build
 $ mv poor-mans-kvm /usr/local/bin/poor-mans-kvm
 ```
 
-create file
+#### create service-file
 
 <pre>
 <b>/etc/systemd/poormanskvm.service</b>
@@ -105,7 +105,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 </pre>
 
-### Start the service
+#### Start the service
 ```
 sudo systemctl daemon-reload
 sudo systemctl enable poormanskvm
