@@ -13,7 +13,7 @@ If the devices reconnects the tool will switch the monitor's input source back.
 
 [...]
 Display 1
-   I2C bus:  /dev/i2c-6 <b><-- DisplyBusNumber = 6</b>
+   I2C bus:  /dev/i2c-6 <b><-- DisplayBusNumber = 6</b>
    EDID synopsis:
       Mfg id:               BNQ
       Model:                BenQ XL2420T
@@ -33,7 +33,7 @@ Find out which code controls your input source (probably VCP code: 60)
 
 [...]
 VCP code: 5E: 6 axis saturation: Magenta
-VCP code: 60: Input Source <b><-- VcpInputSourceCode</b>
+VCP code: 60: Input Source <b><-- VcpInputSourceCode = 60</b>
 VCP code: 62: Audio speaker volume
 [...]
 </pre>
