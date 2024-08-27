@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,7 +14,7 @@ type Config struct {
 	DeviceID             string
 	ConnectInputCode     string
 	DisconnectInputCode  string
-	DisplyBusNumbers     []string
+	DisplayBusNumbers    []string
 	UsbPollingIntervalMs int32
 	VcpInputSourceCode   string
 }
@@ -34,6 +33,10 @@ func main() {
 	loadConfig(configLocation)
 
 	ddcUtilLocation = executeCommand("which", "ddcutil")
+	if ddcUtilLocation == "" {
+		logMessage("ddcutil must be installed")
+		os.Exit(1)
+	}
 
 	var lastState string
 
@@ -72,7 +75,7 @@ func changeMonitorInput(inputCode string) {
 		executeCommand("xset", "dpms", "force", "on")
 	}
 
-	for _, display := range config.DisplyBusNumbers {
+	for _, display := range config.DisplayBusNumbers {
 		logMessage("Switching monitor: %s to input: %s\n", display, inputCode)
 		executeCommand(ddcUtilLocation, "--bus", display, "setvcp", config.VcpInputSourceCode, inputCode)
 	}
@@ -95,12 +98,14 @@ func loadConfig(configLocation string) {
 
 	data, err := os.ReadFile(configLocation)
 	if err != nil {
-		log.Fatalf("error reading config file: %v", err)
+		logMessage("error reading config file: %v", err)
+		os.Exit(1)
 	}
 
 	err = json.Unmarshal(data, &config)
 	if err != nil {
-		log.Fatalf("error unmarshalling YAML: %v", err)
+		logMessage("error unmarshalling config file: %v", err)
+		os.Exit(1)
 	}
 	logMessage("config loaded: %+v", config)
 }

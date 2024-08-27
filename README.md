@@ -75,7 +75,7 @@ Bus 001 Device 030: ID 05e3:0610 Genesys Logic, Inc. Hub
   "DeviceID": "Cherry GmbH CHERRY Corded Device",
   "ConnectInputCode": "0x0f",
   "DisconnectInputCode": "0x12",
-  "DisplyBusNumbers": ["6", "8"],
+  "DisplayBusNumbers": ["6", "8"],
   "UsbPollingIntervalMs": 500,
   "VcpInputSourceCode": "60"
 }
