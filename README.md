@@ -24,8 +24,6 @@ Display 1
    VCP version:         2.0
 [...]
 </pre>
-Find out which code controls your input source (probably VCP code: 60)
-
 
 #### Find input switch code
 <pre>
