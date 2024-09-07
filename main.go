@@ -22,6 +22,8 @@ type Config struct {
 
 var config Config
 var ddcUtilLocation string
+var xsetLocation string
+var lsusbLocation string
 
 func main() {
 
@@ -34,6 +36,8 @@ func main() {
 	loadConfig(configLocation)
 
 	ddcUtilLocation = executeCommand("which", "ddcutil")
+	xsetLocation = executeCommand("which", "xset")
+	lsusbLocation = executeCommand("which", "lsusb")
 
 	var lastState string
 
@@ -58,7 +62,7 @@ func main() {
 }
 
 func getUSBDevices() (string, error) {
-	cmd := exec.Command("lsusb")
+	cmd := exec.Command(lsusbLocation)
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -69,24 +73,25 @@ func getUSBDevices() (string, error) {
 func changeMonitorInput(inputCode string) {
 
 	if inputCode == config.ConnectInputCode {
-		executeCommand("xset", "dpms", "force", "on")
+		executeCommand(xsetLocation, "dpms", "force", "on")
 	}
 
 	for _, display := range config.DisplyBusNumbers {
-		logMessage("Switching monitor: %s to input: %s\n", display, inputCode)
 		executeCommand(ddcUtilLocation, "--bus", display, "setvcp", config.VcpInputSourceCode, inputCode)
+		logMessage("Switching monitor: %s to input: %s\n", display, inputCode)
 	}
 }
 
 func executeCommand(name string, arg ...string) string {
 	logMessage("executing: %s %s\n", name, strings.Join(arg, " "))
 	cmd := exec.Command(name, arg...)
-	output, err := cmd.Output()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		logMessage("Failed to execute: %v\n", err.Error())
+		logMessage("Error details: %s\n", string(output)) // Log stderr and stdout
 		return ""
 	}
-	return strings.TrimSpace(strings.TrimSuffix(string(output), "\n"))
+	return strings.TrimSpace(string(output))
 }
 
 func loadConfig(configLocation string) {
