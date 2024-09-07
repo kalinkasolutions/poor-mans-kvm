@@ -35,6 +35,11 @@ func main() {
 	loadConfig(configLocation)
 
 	ddcUtilLocation = executeCommand("which", "ddcutil")
+	if ddcUtilLocation == "" {
+		logMessage("ddcutil must be installed")
+		os.Exit(1)
+	}
+
 	xsetLocation = executeCommand("which", "xset")
 	lsusbLocation = executeCommand("which", "lsusb")
 
