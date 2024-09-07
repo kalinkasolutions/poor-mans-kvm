@@ -1,0 +1,10 @@
+[Unit]
+Description=Poor Man's KVM Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/poor-mans-kvm -configLocation="/home/kalinka/.config/poormanskvm/config.json"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

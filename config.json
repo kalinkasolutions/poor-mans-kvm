@@ -1,8 +1,18 @@
 {
   "DeviceID": "Cherry GmbH CHERRY Corded Device",
-  "ConnectInputCode": "0x0f",
-  "DisconnectInputCode": "0x12",
-  "DisplayBusNumbers": ["6", "8"],
   "UsbPollingIntervalMs": 500,
-  "VcpInputSourceCode": "60"
+  "Monitors": [
+    {
+      "DisplayBusNumber": "6",
+      "ConnectInputCode": "0x0f",
+      "DisconnectInputCode": "0x12",
+      "VcpInputSourceCode": "60"
+    },
+    {
+      "DisplayBusNumber": "8",
+      "ConnectInputCode": "0x0f",
+      "DisconnectInputCode": "0x12",
+      "VcpInputSourceCode": "60"
+    }
+  ]
 }
