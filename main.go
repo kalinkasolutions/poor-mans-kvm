@@ -6,30 +6,35 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"time"
 )
 
+type Montor struct {
+	ConnectInputCode    string
+	DisconnectInputCode string
+	DisplayBusNumber    string
+	VcpInputSourceCode  string
+}
+
 type Config struct {
 	DeviceID             string
-	ConnectInputCode     string
-	DisconnectInputCode  string
-	DisplayBusNumbers    []string
 	UsbPollingIntervalMs int32
-	VcpInputSourceCode   string
+	Monitors             []Montor
 }
 
 var config Config
 var ddcUtilLocation string
-var xsetLocation string
 var lsusbLocation string
 
 func main() {
 
-	logMessage("Starting poor man's kvm\n")
+	logMessage("Starting poor man's kvm%s\n", runtime.GOOS)
+	logMessage("Running as user: %s", executeCommand("whoami"))
 
 	var configLocation string
-	flag.StringVar(&configLocation, "configLocation", "default", "config location")
+	flag.StringVar(&configLocation, "configLocation", "./config.json", "config location")
 	flag.Parse()
 
 	loadConfig(configLocation)
@@ -40,7 +45,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	xsetLocation = executeCommand("which", "xset")
 	lsusbLocation = executeCommand("which", "lsusb")
 
 	var lastState string
@@ -54,9 +58,9 @@ func main() {
 
 		if lastState != "" {
 			if strings.Contains(currentState, config.DeviceID) && !strings.Contains(lastState, config.DeviceID) {
-				changeMonitorInput(config.ConnectInputCode)
+				changeMonitorInput(true)
 			} else if !strings.Contains(currentState, config.DeviceID) && strings.Contains(lastState, config.DeviceID) {
-				changeMonitorInput(config.DisconnectInputCode)
+				changeMonitorInput(false)
 			}
 		}
 
@@ -74,15 +78,14 @@ func getUSBDevices() (string, error) {
 	return string(out), nil
 }
 
-func changeMonitorInput(inputCode string) {
-
-	if inputCode == config.ConnectInputCode {
-		executeCommand(xsetLocation, "dpms", "force", "on")
-	}
-
-	for _, display := range config.DisplayBusNumbers {
-		executeCommand(ddcUtilLocation, "--bus", display, "setvcp", config.VcpInputSourceCode, inputCode)
-		logMessage("Switching monitor: %s to input: %s\n", display, inputCode)
+func changeMonitorInput(connect bool) {
+	for _, monitor := range config.Monitors {
+		inputCode := monitor.ConnectInputCode
+		if !connect {
+			inputCode = monitor.DisconnectInputCode
+		}
+		executeCommand(ddcUtilLocation, "--bus", monitor.DisplayBusNumber, "setvcp", monitor.VcpInputSourceCode, inputCode)
+		logMessage("Switching monitor: %s to input: %s\n", monitor.DisplayBusNumber, inputCode)
 	}
 }
 
@@ -93,7 +96,7 @@ func executeCommand(name string, arg ...string) string {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		logMessage("Failed to execute: %v\n", err.Error())
-		logMessage("Error details: %s\n", string(output)) // Log stderr and stdout
+		logMessage("Error details: %s\n", string(output))
 		return ""
 	}
 	return strings.TrimSpace(string(output))
