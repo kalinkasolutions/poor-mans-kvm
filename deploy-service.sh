@@ -12,7 +12,9 @@ $GO_CMD build
 
 sudo systemctl stop poor-mans-kvm.service
 
-cp config.json /home/kalinka/.config/poormanskvm/config.json
+mkdir mkdir -p ~/.config/poormanskvm
+cp config.json ~/.config/poormanskvm/config.json
+
 sudo cp poor-mans-kvm /usr/local/bin/poor-mans-kvm
 sudo cp poor-mans-kvm.service /etc/systemd/system/poor-mans-kvm.service
 

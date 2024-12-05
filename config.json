@@ -3,8 +3,8 @@
   "UsbPollingIntervalMs": 500,
   "Monitors": [
     {
-      "DisplayBusNumber": "5",
-      "ConnectInputCode": "0x11",
+      "DisplayBusNumber": "6",
+      "ConnectInputCode": "0x0f",
       "DisconnectInputCode": "0x12",
       "VcpInputSourceCode": "60"
     },
