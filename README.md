@@ -59,8 +59,8 @@ Feature: 52 (Active control)
 <b>lsusb</b>
 
 [...]
-Bus 001 Device 032: ID 046a:c098 Cherry GmbH CHERRY Corded Device
-Bus 001 Device 031: ID 046d:c539 Logitech, Inc. USB Receiver <b><-- DeviceID which connects and disconnects</b>
+Bus 001 Device 032: ID 046a:c098 Cherry GmbH CHERRY Corded Device <b><-- DeviceID which connects and disconnects</b>
+Bus 001 Device 031: ID 046d:c539 Logitech, Inc. USB Receiver 
 Bus 001 Device 030: ID 05e3:0610 Genesys Logic, Inc. Hub
 [...]
 </pre>
@@ -90,6 +90,11 @@ Bus 001 Device 030: ID 05e3:0610 Genesys Logic, Inc. Hub
 </pre>
 
 ### Create service: 
+#### Use the script:
+```
+$ ./deploy-service.sh
+```
+
 #### Build and copy poor man's kvm
 ```
   go build
