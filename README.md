@@ -120,7 +120,7 @@ WantedBy=multi-user.target
 
 #### Start the service
 ```
-sudo systemctl daemon-reload
-sudo systemctl enable poormanskvm
-sudo systemctl start poormanskvm
+$ systemctl daemon-reload
+$ systemctl enable poormanskvm
+$ systemctl start poormanskvm
 ```
