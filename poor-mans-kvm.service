@@ -3,7 +3,7 @@ Description=Poor Man's KVM Service
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/poor-mans-kvm -configLocation="/home/kalinka/.config/poormanskvm/config.json"
+ExecStart=/usr/local/bin/poor-mans-kvm -configLocation="/etc/poormanskvm/config.json"
 Restart=on-failure
 
 [Install]
