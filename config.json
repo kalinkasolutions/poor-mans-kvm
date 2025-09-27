@@ -1,9 +1,15 @@
 {
-  "DeviceID": "CHERRY CHERRY Corded Device",
-  "UsbPollingIntervalMs": 500,
+  "DeviceID": "Keychron  Keychron Link",
+  "UsbPollingIntervalMs": 50,
   "Monitors": [
     {
       "DisplayBusNumber": "8",
+      "ConnectInputCode": "0x0f",
+      "DisconnectInputCode": "0x12",
+      "VcpInputSourceCode": "60"
+    },
+        {
+      "DisplayBusNumber": "9",
       "ConnectInputCode": "0x0f",
       "DisconnectInputCode": "0x12",
       "VcpInputSourceCode": "60"

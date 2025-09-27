@@ -84,7 +84,7 @@ func changeMonitorInput(connect bool) {
 		if !connect {
 			inputCode = monitor.DisconnectInputCode
 		}
-		executeCommand(ddcUtilLocation, "--bus", monitor.DisplayBusNumber, "setvcp", monitor.VcpInputSourceCode, inputCode)
+		go executeCommand(ddcUtilLocation, "--bus", monitor.DisplayBusNumber, "setvcp", monitor.VcpInputSourceCode, inputCode)
 		logMessage("Switching monitor: %s to input: %s\n", monitor.DisplayBusNumber, inputCode)
 	}
 }
