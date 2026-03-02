@@ -46,6 +46,10 @@ func main() {
 	}
 
 	lsusbLocation = executeCommand("which", "lsusb")
+	if lsusbLocation == "" {
+		logMessage("lsusb must be installed")
+		os.Exit(1)
+	}
 
 	var lastState string
 
