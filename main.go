@@ -30,7 +30,7 @@ var lsusbLocation string
 
 func main() {
 
-	logMessage("Starting poor man's kvm%s\n", runtime.GOOS)
+	logMessage("Starting poor man's kvm %s\n", runtime.GOOS)
 	logMessage("Running as user: %s", executeCommand("whoami"))
 
 	var configLocation string
