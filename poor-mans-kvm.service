@@ -1,6 +1,6 @@
 [Unit]
 Description=Poor Man's KVM Service
-After=network.target
+After=systemd-udevd.service
 
 [Service]
 ExecStart=/usr/local/bin/poor-mans-kvm -configLocation="/etc/poormanskvm/config.json"

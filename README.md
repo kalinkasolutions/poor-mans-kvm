@@ -47,7 +47,7 @@ Feature: 52 (Active control)
       Values (  parsed):
          01: VGA-1 
          03: DVI-1
-         11: HDMI-1 <b><-- e,g DisconnectInputCode = 0x11</b>
+         11: HDMI-1 <b><-- e.g DisconnectInputCode = 0x11</b>
          12: HDMI-2
          0f: DisplayPort-1 <b><-- e.g ConnectInputCode = 0x0f</b>
    Feature: 62 (Audio speaker volume)
@@ -97,18 +97,22 @@ $ ./deploy-service.sh
 
 #### Build and copy poor man's kvm
 ```
+$ mkdir -p /etc/poormanskvm
+$ cp config.json /etc/poormanskvm/config.json
+
   go build
 $ mv poor-mans-kvm /usr/local/bin/poor-mans-kvm
 ```
 
-#### create service-file
+
+#### Create service-file
 
 <pre>
-<b>/etc/systemd/poormanskvm.service</b>
+<b>/etc/systemd/poor-mans-kvm.service</b>
 
 [Unit]
 Description=Poor Man's KVM Service
-After=network.target
+After=systemd-udevd.service
 
 [Service]
 ExecStart=/usr/local/bin/poor-mans-kvm -configLocation="/path/to/config.json"
