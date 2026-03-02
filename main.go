@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type Montor struct {
+type Monitor struct {
 	ConnectInputCode    string
 	DisconnectInputCode string
 	DisplayBusNumber    string
@@ -21,7 +21,7 @@ type Montor struct {
 type Config struct {
 	DeviceID             string
 	UsbPollingIntervalMs int32
-	Monitors             []Montor
+	Monitors             []Monitor
 }
 
 var config Config
