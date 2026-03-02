@@ -7,9 +7,9 @@ if [ -z "$GO_CMD" ]; then
     exit 1
 fi
 
-$GO_CMD build
+$GO_CMD build || exit 1
 
-sudo systemctl stop poor-mans-kvm.service
+sudo systemctl stop poor-mans-kvm.service 2>/dev/null || true
 
 sudo mkdir -p /etc/poormanskvm
 sudo cp config.json /etc/poormanskvm/config.json
