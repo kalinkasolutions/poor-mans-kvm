@@ -9,7 +9,7 @@ If the devices reconnects the tool will switch the monitor's input source back.
 ### Create the config
 #### Find display buses
 <pre>
-<b>$ ddcutil detect</b>
+<b>ddcutil detect</b>
 
 [...]
 Display 1
@@ -27,7 +27,7 @@ Display 1
 
 #### Find input switch code
 <pre>
-<b>$ ddcutil vcpinfo --brief</b>
+<b>ddcutil vcpinfo --brief</b>
 
 [...]
 VCP code: 5E: 6 axis saturation: Magenta
@@ -38,7 +38,7 @@ VCP code: 62: Audio speaker volume
 
 #### Find display input codes
 <pre>
-<b>$ ddcutil --dis 1 cap --verbose</b>
+<b>ddcutil --dis 1 cap --verbose</b>
 
 [...]
 Feature: 52 (Active control)
@@ -92,16 +92,16 @@ Bus 001 Device 030: ID 05e3:0610 Genesys Logic, Inc. Hub
 ### Create service: 
 #### Use the script:
 ```
-$ ./deploy-service.sh
+./deploy-service.sh
 ```
 
 #### Build and copy poor man's kvm
 ```
-$ mkdir -p /etc/poormanskvm
-$ cp config.json /etc/poormanskvm/config.json
+sudo mkdir -p /etc/poormanskvm
+sudo cp config.json /etc/poormanskvm/config.json
 
-  go build
-$ mv poor-mans-kvm /usr/local/bin/poor-mans-kvm
+go build
+sudo mv poor-mans-kvm /usr/local/bin/poor-mans-kvm
 ```
 
 
@@ -124,7 +124,7 @@ WantedBy=multi-user.target
 
 #### Start the service
 ```
-$ systemctl daemon-reload
-$ systemctl enable poormanskvm
-$ systemctl start poormanskvm
+sudo systemctl daemon-reload
+sudo systemctl enable poormanskvm
+sudo systemctl start poormanskvm
 ```
