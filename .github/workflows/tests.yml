@@ -20,13 +20,16 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@v1.12.0
+
       - name: Run tests
-        run: go test -json ./... > test-results.json
+        run: gotestsum --junitfile test-results.xml ./...
 
       - name: Test report
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
           name: Go Tests
-          path: test-results.json
-          reporter: golang-json
+          path: test-results.xml
+          reporter: java-junit
