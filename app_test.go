@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 	"testing"
 	"time"
@@ -242,6 +243,9 @@ func TestChangeMonitorInput_Parallel(t *testing.T) {
 }
 
 func TestNewApp(t *testing.T) {
+	if _, err := exec.LookPath("ddcutil"); err != nil {
+		t.Skip("ddcutil not installed")
+	}
 	app, err := newApp(writeTempConfig(t, Config{
 		DeviceID: "1234:5678",
 		Monitors: []Monitor{
