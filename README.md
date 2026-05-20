@@ -1,5 +1,7 @@
 # Poor man's kvm
 
+[![Tests](https://github.com/kalinkasolutions/poor-mans-kvm/actions/workflows/tests.yml/badge.svg)](https://github.com/kalinkasolutions/poor-mans-kvm/actions/workflows/tests.yml)
+
 This tool is designed for USB hubs with two input sources. It sends a command to all connected screens when a specific device disconnects from the computer where the tool is running.
 
 For example, if a USB hub is connected to both a computer and a laptop, and pressing the hub's button causes the keyboard to disconnect, the tool will switch the monitor's input source to the laptop.
