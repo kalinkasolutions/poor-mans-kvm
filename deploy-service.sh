@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GO_CMD=$(which go)
+GO_CMD=$(command -v go)
 
 if [ -z "$GO_CMD" ]; then
     echo "Go is not installed or not in PATH"
