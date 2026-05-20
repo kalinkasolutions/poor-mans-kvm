@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 type App struct {
@@ -87,7 +89,9 @@ func (a *App) changeMonitorInput(connect bool) {
 
 func runCommand(name string, arg ...string) {
 	logMessage("executing: %s %s", name, strings.Join(arg, " "))
-	cmd := exec.Command(name, arg...)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, name, arg...)
 
 	if output, err := cmd.CombinedOutput(); err != nil {
 		logMessage("Failed to execute: %v", err.Error())
