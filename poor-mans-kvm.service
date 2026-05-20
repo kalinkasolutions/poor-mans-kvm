@@ -5,6 +5,7 @@ After=systemd-udevd.service
 [Service]
 ExecStart=/usr/local/bin/poor-mans-kvm -configLocation="/etc/poormanskvm/config.json"
 Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
