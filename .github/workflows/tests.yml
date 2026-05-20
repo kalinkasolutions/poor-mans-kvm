@@ -1,5 +1,4 @@
 name: Tests
-
 on:
   push:
     branches: [main]
@@ -13,10 +12,10 @@ jobs:
       checks: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
 
@@ -27,7 +26,7 @@ jobs:
         run: gotestsum --junitfile test-results.xml ./...
 
       - name: Test report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         if: success() || failure()
         with:
           name: Go Tests
