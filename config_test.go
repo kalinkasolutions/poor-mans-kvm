@@ -35,6 +35,12 @@ func TestLoadConfig(t *testing.T) {
 	if m.ConnectInputCode != "0x11" || m.DisconnectInputCode != "0x12" {
 		t.Errorf("Monitor input codes: got connect=%q disconnect=%q", m.ConnectInputCode, m.DisconnectInputCode)
 	}
+	if m.DisplayBusNumber != "3" {
+		t.Errorf("DisplayBusNumber: got %q, want %q", m.DisplayBusNumber, "3")
+	}
+	if m.VcpInputSourceCode != "0x60" {
+		t.Errorf("VcpInputSourceCode: got %q, want %q", m.VcpInputSourceCode, "0x60")
+	}
 }
 
 func TestLoadConfig_MissingFile(t *testing.T) {

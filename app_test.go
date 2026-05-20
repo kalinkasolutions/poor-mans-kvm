@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 	"testing"
+	"time"
 )
 
 // writeTempScript creates an executable shell script that prints output and returns its path.
@@ -128,9 +130,45 @@ func TestHandleEvent_LsusbError(t *testing.T) {
 	}
 }
 
+// writeArgCaptureScript creates a script that appends its arguments (space-joined) to a temp
+// file on each invocation, so tests can assert which args were passed.
+func writeArgCaptureScript(t *testing.T) (scriptPath, capturePath string) {
+	t.Helper()
+	cap, err := os.CreateTemp("", "ddcutil-capture-*.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cap.Close()
+	t.Cleanup(func() { os.Remove(cap.Name()) })
+	capturePath = cap.Name()
+
+	script, err := os.CreateTemp("", "ddcutil-mock-*.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Fprintf(script, "#!/bin/sh\necho \"$@\" >> \"%s\"\n", capturePath)
+	script.Close()
+	if err := os.Chmod(script.Name(), 0755); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Remove(script.Name()) })
+	scriptPath = script.Name()
+	return
+}
+
+func readCapturedLines(t *testing.T, capturePath string) []string {
+	t.Helper()
+	data, err := os.ReadFile(capturePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return strings.Split(strings.TrimRight(string(data), "\n"), "\n")
+}
+
 func TestChangeMonitorInput_Connect(t *testing.T) {
+	ddcutil, capture := writeArgCaptureScript(t)
 	app := &App{
-		ddcutil: "echo",
+		ddcutil: ddcutil,
 		config: Config{
 			Monitors: []Monitor{
 				{ConnectInputCode: "0x11", DisconnectInputCode: "0x12", DisplayBusNumber: "3", VcpInputSourceCode: "0x60"},
@@ -139,11 +177,23 @@ func TestChangeMonitorInput_Connect(t *testing.T) {
 		},
 	}
 	app.changeMonitorInput(true)
+
+	lines := readCapturedLines(t, capture)
+	if len(lines) != 2 {
+		t.Fatalf("expected 2 ddcutil invocations, got %d: %v", len(lines), lines)
+	}
+	if lines[0] != "--bus 3 setvcp 0x60 0x11" {
+		t.Errorf("monitor 1: got %q, want \"--bus 3 setvcp 0x60 0x11\"", lines[0])
+	}
+	if lines[1] != "--bus 5 setvcp 0x60 0x21" {
+		t.Errorf("monitor 2: got %q, want \"--bus 5 setvcp 0x60 0x21\"", lines[1])
+	}
 }
 
 func TestChangeMonitorInput_Disconnect(t *testing.T) {
+	ddcutil, capture := writeArgCaptureScript(t)
 	app := &App{
-		ddcutil: "echo",
+		ddcutil: ddcutil,
 		config: Config{
 			Monitors: []Monitor{
 				{ConnectInputCode: "0x11", DisconnectInputCode: "0x12", DisplayBusNumber: "3", VcpInputSourceCode: "0x60"},
@@ -151,6 +201,44 @@ func TestChangeMonitorInput_Disconnect(t *testing.T) {
 		},
 	}
 	app.changeMonitorInput(false)
+
+	lines := readCapturedLines(t, capture)
+	if len(lines) != 1 {
+		t.Fatalf("expected 1 ddcutil invocation, got %d: %v", len(lines), lines)
+	}
+	if lines[0] != "--bus 3 setvcp 0x60 0x12" {
+		t.Errorf("got %q, want \"--bus 3 setvcp 0x60 0x12\"", lines[0])
+	}
+}
+
+func TestChangeMonitorInput_Parallel(t *testing.T) {
+	ddcutil, capture := writeArgCaptureScript(t)
+	app := &App{
+		ddcutil: ddcutil,
+		config: Config{
+			ParallelMonitorSwitch: true,
+			Monitors: []Monitor{
+				{ConnectInputCode: "0x11", DisconnectInputCode: "0x12", DisplayBusNumber: "3", VcpInputSourceCode: "0x60"},
+				{ConnectInputCode: "0x21", DisconnectInputCode: "0x22", DisplayBusNumber: "5", VcpInputSourceCode: "0x60"},
+			},
+		},
+	}
+	app.changeMonitorInput(true)
+
+	// goroutines are detached; give them time to complete
+	time.Sleep(200 * time.Millisecond)
+
+	lines := readCapturedLines(t, capture)
+	if len(lines) != 2 {
+		t.Fatalf("expected 2 ddcutil invocations, got %d: %v", len(lines), lines)
+	}
+	got := map[string]bool{lines[0]: true, lines[1]: true}
+	if !got["--bus 3 setvcp 0x60 0x11"] {
+		t.Error("missing invocation for monitor 1: --bus 3 setvcp 0x60 0x11")
+	}
+	if !got["--bus 5 setvcp 0x60 0x21"] {
+		t.Error("missing invocation for monitor 2: --bus 5 setvcp 0x60 0x21")
+	}
 }
 
 func TestNewApp(t *testing.T) {
