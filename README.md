@@ -71,7 +71,7 @@ Bus 001 Device 030: ID 05e3:0610 Genesys Logic, Inc. Hub
 
 {
   "DeviceID": "Cherry GmbH CHERRY Corded Device",
-  "UsbPollingIntervalMs": 500,
+  "ParallelMonitorSwitch": false,
   "Monitors": [
     {
       "DisplayBusNumber": "5",
@@ -88,6 +88,12 @@ Bus 001 Device 030: ID 05e3:0610 Genesys Logic, Inc. Hub
   ]
 }
 </pre>
+
+#### ParallelMonitorSwitch
+
+When `false` (default), monitors are switched one after the other. This is the safe choice because DDC/CI commands go over I2C, and concurrent writes to the same bus can cause commands to fail or get garbled.
+
+Set to `true` only if each of your monitors is on a **separate I2C bus** (i.e. each plugged into its own physical GPU output). In that case parallel switching is safe and slightly faster. You can verify bus assignments with `ddcutil detect` — if all `DisplayBusNumber` values are distinct, parallel mode is fine.
 
 ### Create service: 
 #### Use the script:

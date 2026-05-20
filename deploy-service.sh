@@ -12,7 +12,16 @@ $GO_CMD build || exit 1
 sudo systemctl stop poor-mans-kvm.service 2>/dev/null || true
 
 sudo mkdir -p /etc/poormanskvm
-sudo cp config.json /etc/poormanskvm/config.json
+if [ -f /etc/poormanskvm/config.json ]; then
+    printf "Config already exists at /etc/poormanskvm/config.json. Overwrite? [y/N] "
+    read -r answer
+    case "$answer" in
+        [yY]) sudo cp config.json /etc/poormanskvm/config.json ;;
+        *) echo "Keeping existing config." ;;
+    esac
+else
+    sudo cp config.json /etc/poormanskvm/config.json
+fi
 
 sudo cp poor-mans-kvm /usr/local/bin/poor-mans-kvm
 sudo cp poor-mans-kvm.service /etc/systemd/system/poor-mans-kvm.service

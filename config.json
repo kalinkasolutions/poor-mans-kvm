@@ -1,6 +1,6 @@
 {
   "DeviceID": "Keychron  Keychron Link",
-  "UsbPollingIntervalMs": 50,
+  "ParallelMonitorSwitch": true,
   "Monitors": [
     {
       "DisplayBusNumber": "8",

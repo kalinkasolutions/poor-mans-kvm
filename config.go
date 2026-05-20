@@ -14,8 +14,9 @@ type Monitor struct {
 }
 
 type Config struct {
-	DeviceID  string
-	Monitors  []Monitor
+	DeviceID              string
+	ParallelMonitorSwitch bool
+	Monitors              []Monitor
 }
 
 func loadConfig(configLocation string, cfg *Config) error {

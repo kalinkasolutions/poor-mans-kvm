@@ -14,7 +14,10 @@ type App struct {
 }
 
 func (a *App) watch() error {
-	output, _ := a.getUSBDevices()
+	output, err := a.getUSBDevices()
+	if err != nil {
+		logMessage("Warning: could not get initial USB state: %v", err)
+	}
 	lastConnected := a.deviceConnected(output)
 
 	cmd := exec.Command(a.udevadm, "monitor", "--udev", "--subsystem-match=usb")
@@ -73,8 +76,12 @@ func (a *App) changeMonitorInput(connect bool) {
 		if !connect {
 			inputCode = monitor.DisconnectInputCode
 		}
-		go runCommand(a.ddcutil, "--bus", monitor.DisplayBusNumber, "setvcp", monitor.VcpInputSourceCode, inputCode)
 		logMessage("Switching monitor: %s to input: %s", monitor.DisplayBusNumber, inputCode)
+		if a.config.ParallelMonitorSwitch {
+			go runCommand(a.ddcutil, "--bus", monitor.DisplayBusNumber, "setvcp", monitor.VcpInputSourceCode, inputCode)
+		} else {
+			runCommand(a.ddcutil, "--bus", monitor.DisplayBusNumber, "setvcp", monitor.VcpInputSourceCode, inputCode)
+		}
 	}
 }
 
